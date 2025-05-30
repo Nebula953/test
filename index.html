@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Meme Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradient {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(90deg); }
+        }
+
+        .meme-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .meme-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .meme-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border-left: 4px solid #4ecdc4;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .meme-category {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #4ecdc4;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .github-link {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .github-link:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .meme-text {
+                font-size: 1.2rem;
+                min-height: 100px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CS Meme Generator</h1>
+        
+        <div class="meme-container">
+            <div class="meme-category" id="category">Programming</div>
+            <div class="meme-text" id="memeText">
+                Click "Generate Meme" to get started! 💻
+            </div>
+        </div>
+        
+        <button class="btn" onclick="generateMeme()">🎲 Generate Meme</button>
+        <button class="btn" onclick="shareMeme()">📱 Share Meme</button>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalMemes">0</div>
+                <div class="stat-label">Memes Generated</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="currentStreak">0</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="favoriteCategory">None</div>
+                <div class="stat-label">Favorite Category</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const memes = {
+            programming: [
+                "When you fix a bug but create 3 new ones: 'I see this as an absolute win!'",
+                "Me: 'This code is clean and readable' // Also me: What does this do? *written yesterday*",
+                "When your code works on the first try: 'Something's wrong, I can feel it'",
+                "Git commit -m 'fixed stuff'",
+                "When you finally understand recursion: 'To understand recursion, you must first understand recursion'",
+                "99 little bugs in the code, 99 little bugs. Take one down, patch it around, 117 little bugs in the code.",
+                "When you copy code from Stack Overflow and it actually works: 'It's free real estate'",
+                "Me debugging: 'It was DNS' // It's always DNS",
+                "When someone asks you to fix their computer because you're a programmer: 'That's not how this works'",
+                "Tabs vs Spaces: Civil War"
+            ],
+            algorithms: [
+                "O(n²) algorithm: 'I am speed' // Narrator: He was not speed",
+                "When you optimize from O(n²) to O(n log n): 'Look what they need to mimic a fraction of our power'",
+                "Bubble sort in production: 'Sometimes my genius is... it's almost frightening'",
+                "When you need to sort and you choose bubble sort: 'Some people just want to watch the world burn'",
+                "Quicksort best case vs worst case: 'Perfectly balanced, as all things should be'",
+                "When you forget to handle the base case in recursion: 'Stack Overflow has entered the chat'",
+                "Dynamic programming: 'Why do it once when you can do it a thousand times and remember?'",
+                "When someone says they invented a new sorting algorithm: 'You merely adopted the sort. I was born in it.'",
+                "Big O notation: 'It's not about the size, it's about the complexity'",
+                "When your algorithm is O(1): 'Unlimited power!'"
+            ],
+            databases: [
+                "When you forget the WHERE clause in UPDATE: 'Some men just want to watch the world burn'",
+                "NoSQL vs SQL: 'Why are you the way that you are?'",
+                "When your query takes 10 minutes to run: 'This is fine' *everything is on fire*",
+                "SELECT * FROM users WHERE password = '123456': 'The sacred texts!'",
+                "When someone suggests dropping the production database: 'That's a bold strategy Cotton'",
+                "INNER JOIN vs LEFT JOIN: 'They're the same picture' // Corporate needs you to find the difference",
+                "When your database has no foreign keys: 'Some people just want to watch data burn'",
+                "MongoDB: 'We don't do that here' // referring to ACID properties",
+                "When you finally understand JOINs: 'The truth is... I am inevitable'",
+                "Database normalization: 'A small price to pay for salvation'"
+            ],
+            webdev: [
+                "When CSS finally works: 'Perhaps I treated you too harshly'",
+                "JavaScript: 'I guide others to a treasure I cannot possess' // referring to types",
+                "When your website works on Chrome but not Internet Explorer: 'Some sacrifices require the strongest wills'",
+                "HTML without CSS: 'Look how they massacred my boy'",
+                "When you center a div: 'I used the flexbox to center the flexbox'",
+                "React vs Angular vs Vue: 'There can only be one!' // Framework wars",
+                "When your JavaScript code works but you don't know why: 'It's magic'",
+                "CSS Grid vs Flexbox: 'Why not both?'",
+                "When you finally understand closures: 'Reality can be whatever I want'",
+                "NPM install: 'Fine, I'll do it myself' // downloads half the internet"
+            ],
+            devops: [
+                "When production goes down at 3 AM: 'Why do I hear boss music?'",
+                "Docker: 'It works on my machine' // containerized",
+                "Kubernetes: 'I used the containers to manage the containers'",
+                "When you have to explain why the server is down: 'The hardest choices require the strongest wills'",
+                "CI/CD pipeline failing: 'You were supposed to destroy the bugs, not join them!'",
+                "When you forget to backup before deployment: 'I've made a huge mistake'",
+                "Microservices architecture: 'Perfectly balanced, as all things should be'",
+                "When monitoring alerts wake you up: 'Dormammu, I've come to bargain'",
+                "Infrastructure as Code: 'The future is now, old man'",
+                "When you scale horizontally instead of vertically: 'This does put a smile on my face'"
+            ],
+            security: [
+                "When someone stores passwords in plain text: 'Some people just want to watch the world burn'",
+                "SQL Injection: 'I am inevitable' // Little Bobby Tables",
+                "When you find a security vulnerability: 'With great power comes great responsibility'",
+                "Two-factor authentication: 'I used the phone to protect the phone'",
+                "When someone clicks a phishing email: 'You were supposed to destroy the hackers, not join them!'",
+                "HTTPS everywhere: 'The hardest choices require the strongest wills'",
+                "When your password is 'password123': 'You guys are getting security?'",
+                "Buffer overflow: 'You merely adopted the stack. I was born in it.'",
+                "When you implement proper encryption: 'Reality can be whatever I want'",
+                "Social engineering: 'The greatest trick the devil ever pulled was convincing the world he didn't exist'"
+            ]
+        };
+
+        let stats = {
+            totalMemes: 0,
+            currentStreak: 0,
+            categories: {}
+        };
+
+        function generateMeme() {
+            const categories = Object.keys(memes);
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const categoryMemes = memes[randomCategory];
+            const randomMeme = categoryMemes[Math.floor(Math.random() * categoryMemes.length)];
+            
+            document.getElementById('category').textContent = randomCategory.charAt(0).toUpperCase() + randomCategory.slice(1);
+            document.getElementById('memeText').textContent = randomMeme;
+            
+            // Update stats
+            stats.totalMemes++;
+            stats.currentStreak++;
+            stats.categories[randomCategory] = (stats.categories[randomCategory] || 0) + 1;
+            
+            updateStatsDisplay();
+            
+            // Add some animation
+            const memeContainer = document.querySelector('.meme-container');
+            memeContainer.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                memeContainer.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('totalMemes').textContent = stats.totalMemes;
+            document.getElementById('currentStreak').textContent = stats.currentStreak;
+            
+            // Find favorite category
+            let favoriteCategory = 'None';
+            let maxCount = 0;
+            for (const [category, count] of Object.entries(stats.categories)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    favoriteCategory = category.charAt(0).toUpperCase() + category.slice(1);
+                }
+            }
+            document.getElementById('favoriteCategory').textContent = favoriteCategory;
+        }
+
+        function shareMeme() {
+            const memeText = document.getElementById('memeText').textContent;
+            const category = document.getElementById('category').textContent;
+            
+            if (memeText === "Click \"Generate Meme\" to get started! 💻") {
+                alert('Generate a meme first! 🎲');
+                return;
+            }
+            
+            const shareText = `CS Meme (${category}): ${memeText}\n\n#programming #computerscience #memes`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'CS Meme Generator',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Meme copied to clipboard! 📋');
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = shareText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Meme copied to clipboard! 📋');
+                });
+            }
+        }
+
+        // Generate a meme on page load
+        window.addEventListener('load', generateMeme);
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space') {
+                event.preventDefault();
+                generateMeme();
+            } else if (event.code === 'Enter') {
+                event.preventDefault();
+                shareMeme();
+            }
+        });
+    </script>
+</body>
+</html>
